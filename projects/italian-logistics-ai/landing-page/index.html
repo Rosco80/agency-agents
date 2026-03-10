@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian Logistics AI Dispatcher | Autoflow Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        autoflow: {
+                            black: '#000000',
+                            chartreuse: '#c4ef17',
+                            darkgray: '#111111',
+                            gray: '#222222'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Basic Analytics Placeholder -->
+    <script>
+        console.log("Analytics Tracking Initialized.");
+        function trackEvent(eventName, data) {
+            console.log("Tracking Event: " + eventName, data);
+        }
+    </script>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .glass-panel {
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(196, 239, 23, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(196, 239, 23, 0.5);
+        }
+
+        .glow-border {
+            box-shadow: 0 0 15px rgba(196, 239, 23, 0.3);
+            border: 1px solid #c4ef17;
+        }
+
+        .glow-border:hover {
+            box-shadow: 0 0 25px rgba(196, 239, 23, 0.6);
+        }
+
+        /* Toggle Switch Styles */
+        .lang-switch {
+            display: none;
+        }
+
+        .lang-en .it-text {
+            display: none;
+        }
+
+        .lang-en .en-text {
+            display: block;
+        }
+
+        .lang-it .en-text {
+            display: none;
+        }
+
+        .lang-it .it-text {
+            display: block;
+        }
+
+        .en-text {
+            display: none;
+        }
+
+        /* Default to IT */
+    </style>
+</head>
+
+<body class="lang-it font-sans antialiased selection:bg-autoflow-chartreuse selection:text-black">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-autoflow-chartreuse/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold tracking-tighter text-white">AUTOFLOW <span
+                            class="text-autoflow-chartreuse glow-text">SOLUTIONS</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex bg-autoflow-darkgray rounded-full p-1 border border-autoflow-chartreuse/30">
+                        <button onclick="setLang('it')" id="btn-it"
+                            class="px-3 py-1 text-sm font-semibold rounded-full bg-autoflow-chartreuse text-black transition-all">🇮🇹
+                            ITA</button>
+                        <button onclick="setLang('en')" id="btn-en"
+                            class="px-3 py-1 text-sm font-semibold rounded-full text-white hover:text-autoflow-chartreuse transition-all">🇬🇧
+                            ENG</button>
+                    </div>
+                    <a href="#audit"
+                        class="hidden md:block bg-autoflow-chartreuse text-black px-6 py-2 rounded-full font-bold hover:bg-white hover:text-black transition-all glow-border">
+                        <span class="it-text">Prenota Audit</span>
+                        <span class="en-text">Book Audit</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        <!-- Abstract glowing background -->
+        <div class="absolute inset-0 z-0">
+            <div
+                class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-autoflow-chartreuse/10 rounded-full blur-[120px]">
+            </div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
+                <span class="it-text">Smetti di perdere <span class="text-autoflow-chartreuse glow-text">€0,24 per
+                        chilometro</span><br /> a causa della gestione manuale.</span>
+                <span class="en-text">Stop losing <span class="text-autoflow-chartreuse glow-text">€0.24 per
+                        kilometer</span><br /> due to manual dispatching.</span>
+            </h1>
+            <p
+                class="mt-4 max-w-3xl border-l-4 border-autoflow-chartreuse pl-6 mx-auto text-xl text-gray-400 mb-10 text-left">
+                <span class="it-text">Implementa un AI Dispatcher personalizzato per le tratte regionali italiane.
+                    Riduzione del consumo di carburante del 12%, eliminazione della burocrazia manuale e tracciamento in
+                    tempo reale per ogni cliente—in 30 giorni o meno.</span>
+                <span class="en-text">Deploy a Custom AI Dispatcher tailored for Italian regional routes. 12% fuel
+                    reduction, zero manual paperwork, and real-time tracking for every client—in 30 days or less.</span>
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#audit"
+                    class="bg-autoflow-chartreuse text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-white transition-all glow-border">
+                    <span class="it-text">Richiedi il tuo Audit della Flotta</span>
+                    <span class="en-text">Request Your Fleet Audit</span>
+                </a>
+            </div>
+
+            <!-- Dashboard Mockup Image -->
+            <div class="mt-20 relative mx-auto w-full max-w-5xl">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-autoflow-chartreuse/50 to-autoflow-chartreuse/10 rounded-xl blur opacity-30">
+                </div>
+                <img src="../assets/mockup_v2.png" alt="AI Dispatcher Dashboard"
+                    class="relative rounded-xl border border-autoflow-chartreuse/30 shadow-2xl w-full object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: The Problem -->
+    <section class="py-24 bg-autoflow-darkgray relative border-y border-autoflow-chartreuse/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">
+                    <span class="it-text">La tua flotta è "Digitalizzata" o <span
+                            class="text-autoflow-chartreuse">"Intelligente"</span>?</span>
+                    <span class="en-text">Is your fleet "Digital" or <span
+                            class="text-autoflow-chartreuse">"Intelligent"</span>?</span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    <span class="it-text">Molte flotte regionali in Italia sono bloccate in "Modalità Manuale". Se i
+                        tuoi addetti al traffico usano ancora WhatsApp, Excel e la conoscenza verbale per gestire le
+                        rotte, stai perdendo migliaia di euro ogni mese.</span>
+                    <span class="en-text">Many regional fleets in Italy are stuck in "Manual Mode." If your dispatchers
+                        are still using WhatsApp, Excel, and tribal knowledge to route trucks, you are leaving thousands
+                        on the table every month.</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-autoflow-chartreuse/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-autoflow-chartreuse/10 rounded-lg flex items-center justify-center mb-6 border border-autoflow-chartreuse/30">
+                        <svg class="w-6 h-6 text-autoflow-chartreuse" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">
+                        <span class="it-text">Carburante Sprecato</span>
+                        <span class="en-text">Wasted Fuel</span>
+                    </h3>
+                    <p class="text-gray-400">
+                        <span class="it-text">Rotte sub-ottimali nei centri storici italiani e zone ZTL causano uno
+                            spreco enorme di carburante e tempo.</span>
+                        <span class="en-text">Sub-optimal routing through narrow Italian city centers and ZTL zones
+                            causes massive fuel and time waste.</span>
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-autoflow-chartreuse/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-autoflow-chartreuse/10 rounded-lg flex items-center justify-center mb-6 border border-autoflow-chartreuse/30">
+                        <svg class="w-6 h-6 text-autoflow-chartreuse" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">
+                        <span class="it-text">Burocrazia Lenta</span>
+                        <span class="en-text">Admin Drag</span>
+                    </h3>
+                    <p class="text-gray-400">
+                        <span class="it-text">Ore perse ogni settimana tra bolle di accompagnamento cartacee e
+                            pianificazione manuale soggetta a errori.</span>
+                        <span class="en-text">Hours lost every week navigating manual bills of lading and error-prone
+                            spreadsheet scheduling.</span>
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-autoflow-chartreuse/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-autoflow-chartreuse/10 rounded-lg flex items-center justify-center mb-6 border border-autoflow-chartreuse/30">
+                        <svg class="w-6 h-6 text-autoflow-chartreuse" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">
+                        <span class="it-text">Nessuna Visibilità</span>
+                        <span class="en-text">Zero Visibility</span>
+                    </h3>
+                    <p class="text-gray-400">
+                        <span class="it-text">Il problema "Dov'è il mio camion?": nessun dato in tempo reale o ETA
+                            proattivi da fornire ai tuoi clienti impazienti.</span>
+                        <span class="en-text">The "Where’s My Truck?" problem: no real-time tracking data or proactive
+                            ETAs to provide to impatient customers.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Calculator Section -->
+    <section class="py-24 bg-autoflow-black relative border-t border-autoflow-chartreuse/10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">
+                <span class="it-text">Calcola il Tuo Risparmio Mensile</span>
+                <span class="en-text">Calculate Your Monthly Savings</span>
+            </h2>
+            <p class="text-xl text-gray-400 mb-12">
+                <span class="it-text">Scopri quanto potresti risparmiare bloccando le inefficienze dei percorsi manuali.
+                    (Stima basata su medie regionali)</span>
+                <span class="en-text">Discover how much you could save by stopping manual routing inefficiencies.
+                    (Estimate based on regional averages)</span>
+            </p>
+
+            <div class="glass-panel p-10 rounded-3xl glow-border">
+                <div class="mb-8 text-left">
+                    <label class="block text-lg font-semibold mb-4 text-autoflow-chartreuse">
+                        <span class="it-text">Numero di Camion in Flotta: <span id="fleet-count-display"
+                                class="text-white text-2xl font-bold ml-2">25</span></span>
+                        <span class="en-text">Active Trucks in Fleet: <span id="fleet-count-display-en"
+                                class="text-white text-2xl font-bold ml-2">25</span></span>
+                    </label>
+                    <input type="range" id="fleet-slider" min="10" max="100" value="25"
+                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    <style>
+                        /* Custom range slider styling for Tailwind */
+                        input[type=range]::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            background: #c4ef17;
+                            cursor: pointer;
+                            box-shadow: 0 0 10px rgba(196, 239, 23, 0.8);
+                        }
+                    </style>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+                    <div class="p-6 bg-autoflow-darkgray/50 rounded-2xl border border-gray-800">
+                        <h4 class="text-gray-400 font-medium mb-2">
+                            <span class="it-text">Attuale Sprecato al Mese</span>
+                            <span class="en-text">Current Wasted per Month</span>
+                        </h4>
+                        <div class="text-4xl font-extrabold text-red-500/80 line-through">
+                            €<span id="wasted-value">18,000</span>
+                        </div>
+                    </div>
+                    <div
+                        class="p-6 bg-autoflow-chartreuse/10 rounded-2xl border border-autoflow-chartreuse/30 relative overflow-hidden">
+                        <div class="absolute -inset-1 bg-autoflow-chartreuse/20 blur-xl"></div>
+                        <div class="relative z-10">
+                            <h4 class="text-autoflow-chartreuse font-medium mb-2">
+                                <span class="it-text">Risparmio Stimato NEXUS (Mese 1)</span>
+                                <span class="en-text">Estimated NEXUS Savings (Month 1)</span>
+                            </h4>
+                            <div class="text-5xl font-extrabold text-autoflow-chartreuse glow-text">
+                                €<span id="saved-value">2,500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="audit" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-autoflow-chartreuse/5"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="text-4xl font-bold mb-6">
+                <span class="it-text">Pronto a trasformare la tua logistica?</span>
+                <span class="en-text">Ready to transform your logistics?</span>
+            </h2>
+            <p class="text-xl text-gray-300 mb-10">
+                <span class="it-text">Prenota il tuo Audit 1:1 gratuito oggi. Analizzeremo i tuoi ultimi 30 giorni di
+                    dati sulle rotte e ti mostreremo esattamente dove sono le perdite.</span>
+                <span class="en-text">Book your free 1:1 Audit today. We’ll analyze your last 30 days of route data and
+                    show you exactly where the leaks are.</span>
+            </p>
+            <form action="https://formspree.io/f/mbdzgjdl" method="POST"
+                class="glass-panel p-8 rounded-2xl max-w-lg mx-auto text-left glow-border">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Nome / Name</label>
+                    <input type="text" name="name" required
+                        class="w-full bg-autoflow-gray border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-autoflow-chartreuse transition-colors">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Email Aziendale / Work Email</label>
+                    <input type="email" name="email" required
+                        class="w-full bg-autoflow-gray border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-autoflow-chartreuse transition-colors">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-2">Dimensione Flotta / Fleet Size</label>
+                    <select name="fleet_size"
+                        class="w-full bg-autoflow-gray border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-autoflow-chartreuse transition-colors">
+                        <option value="1-10">1-10 Camion</option>
+                        <option value="11-50">11-50 Camion</option>
+                        <option value="50+">50+ Camion</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="w-full bg-autoflow-chartreuse text-black font-bold text-lg py-4 rounded-lg hover:bg-white transition-all shadow-[0_0_15px_rgba(196,239,23,0.4)]">
+                    <span class="it-text">Richiedi Audit Gratuito</span>
+                    <span class="en-text">Request Free Audit</span>
+                </button>
+                <p class="text-center text-sm text-gray-500 mt-4">
+                    <span class="it-text">*Disponibilità limitata: solo 3 audit regionali al mese.*</span>
+                    <span class="en-text">*Limited to 3 regional audits per month.*</span>
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-autoflow-darkgray border-t border-autoflow-chartreuse/20 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-500 mb-4">
+                Powered by <span class="text-white font-semibold">Autoflow Solutions</span> NEXUS Engine
+            </p>
+            <p class="text-sm text-gray-600">&copy; 2026 Autoflow Solutions. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Script for Language Toggle -->
+    <script>
+        function setLang(lang) {
+            document.body.className = `lang-${lang} font-sans antialiased selection:bg-autoflow-chartreuse selection:text-black`;
+
+            const btnIt = document.getElementById('btn-it');
+            const btnEn = document.getElementById('btn-en');
+
+            if (lang === 'it') {
+                btnIt.className = 'px-3 py-1 text-sm font-semibold rounded-full bg-autoflow-chartreuse text-black transition-all';
+                btnEn.className = 'px-3 py-1 text-sm font-semibold rounded-full text-white hover:text-autoflow-chartreuse transition-all';
+            } else {
+                btnEn.className = 'px-3 py-1 text-sm font-semibold rounded-full bg-autoflow-chartreuse text-black transition-all';
+                btnIt.className = 'px-3 py-1 text-sm font-semibold rounded-full text-white hover:text-autoflow-chartreuse transition-all';
+            }
+        }
+
+        // ROI Calculator Logic
+        const slider = document.getElementById('fleet-slider');
+        if (slider) {
+            const countIt = document.getElementById('fleet-count-display');
+            const countEn = document.getElementById('fleet-count-display-en');
+            const wasted = document.getElementById('wasted-value');
+            const saved = document.getElementById('saved-value');
+
+            slider.addEventListener('input', function () {
+                const fleets = parseInt(this.value);
+                countIt.textContent = fleets;
+                countEn.textContent = fleets;
+
+                // Assumptions: 3000km/mo per truck. €0.24 wasted/km = €720 wasted per truck.
+                // AI Dispatcher recovers ~14% efficiency = ~€100 saved per truck minimally.
+                const wastedNum = fleets * 720;
+                const savedNum = fleets * 100;
+
+                wasted.textContent = wastedNum.toLocaleString();
+                saved.textContent = savedNum.toLocaleString();
+            });
+        }
+    </script>
+</body>
+
+</html>
