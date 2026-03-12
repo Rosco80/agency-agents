@@ -11,12 +11,15 @@
 #
 # Tools:
 #   claude-code  -- Copy agents to ~/.claude/agents/
+#   copilot      -- Copy agents to ~/.github/agents/
 #   antigravity  -- Copy skills to ~/.gemini/antigravity/skills/
 #   gemini-cli   -- Install extension to ~/.gemini/extensions/agency-agents/
 #   opencode     -- Copy agents to .opencode/agent/ in current directory
 #   cursor       -- Copy rules to .cursor/rules/ in current directory
 #   aider        -- Copy CONVENTIONS.md to current directory
 #   windsurf     -- Copy .windsurfrules to current directory
+#   openclaw     -- Copy workspaces to ~/.openclaw/agency-agents/
+#   qwen         -- Copy SubAgents to ~/.qwen/agents/ (user-wide) or .qwen/agents/ (project)
 #   all          -- Install for all detected tools (default)
 #
 # Flags:
@@ -31,9 +34,9 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# Colours -- only when stdout is a real terminal
+# Colours -- only when stdout supports color
 # ---------------------------------------------------------------------------
-if [[ -t 1 ]]; then
+if [[ -t 1 && -z "${NO_COLOR:-}" && "${TERM:-}" != "dumb" ]]; then
   C_GREEN=$'\033[0;32m'
   C_YELLOW=$'\033[1;33m'
   C_RED=$'\033[0;31m'
@@ -61,11 +64,14 @@ BOX_INNER=48   # chars between the two | walls
 box_top() { printf "  +"; printf '%0.s-' $(seq 1 $BOX_INNER); printf "+\n"; }
 box_bot() { box_top; }
 box_sep() { printf "  |"; printf '%0.s-' $(seq 1 $BOX_INNER); printf "|\n"; }
+strip_ansi() {
+  awk '{ gsub(/\033\[[0-9;]*m/, ""); print }' <<< "$1"
+}
 box_row() {
   # Strip ANSI escapes when measuring visible length
   local raw="$1"
   local visible
-  visible="$(printf '%s' "$raw" | sed 's/\x1b\[[0-9;]*m//g')"
+  visible="$(strip_ansi "$raw")"
   local pad=$(( BOX_INNER - 2 - ${#visible} ))
   if (( pad < 0 )); then pad=0; fi
   printf "  | %s%*s |\n" "$raw" "$pad" ''
@@ -79,7 +85,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 INTEGRATIONS="$REPO_ROOT/integrations"
 
-ALL_TOOLS=(claude-code antigravity gemini-cli opencode cursor aider windsurf)
+ALL_TOOLS=(claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf qwen)
 
 # ---------------------------------------------------------------------------
 # Usage
@@ -103,22 +109,28 @@ check_integrations() {
 # Tool detection
 # ---------------------------------------------------------------------------
 detect_claude_code() { [[ -d "${HOME}/.claude" ]]; }
+detect_copilot()      { command -v code >/dev/null 2>&1 || [[ -d "${HOME}/.github" ]]; }
 detect_antigravity()  { [[ -d "${HOME}/.gemini/antigravity/skills" ]]; }
 detect_gemini_cli()   { command -v gemini >/dev/null 2>&1 || [[ -d "${HOME}/.gemini" ]]; }
 detect_cursor()       { command -v cursor >/dev/null 2>&1 || [[ -d "${HOME}/.cursor" ]]; }
 detect_opencode()     { command -v opencode >/dev/null 2>&1 || [[ -d "${HOME}/.config/opencode" ]]; }
 detect_aider()        { command -v aider >/dev/null 2>&1; }
+detect_openclaw()     { command -v openclaw >/dev/null 2>&1 || [[ -d "${HOME}/.openclaw" ]]; }
 detect_windsurf()     { command -v windsurf >/dev/null 2>&1 || [[ -d "${HOME}/.codeium" ]]; }
+detect_qwen()         { command -v qwen >/dev/null 2>&1 || [[ -d "${HOME}/.qwen" ]]; }
 
 is_detected() {
   case "$1" in
     claude-code) detect_claude_code ;;
+    copilot)     detect_copilot     ;;
     antigravity) detect_antigravity ;;
     gemini-cli)  detect_gemini_cli  ;;
     opencode)    detect_opencode    ;;
+    openclaw)    detect_openclaw    ;;
     cursor)      detect_cursor      ;;
     aider)       detect_aider       ;;
     windsurf)    detect_windsurf    ;;
+    qwen)        detect_qwen        ;;
     *)           return 1 ;;
   esac
 }
@@ -127,12 +139,15 @@ is_detected() {
 tool_label() {
   case "$1" in
     claude-code) printf "%-14s  %s" "Claude Code"  "(claude.ai/code)"        ;;
+    copilot)     printf "%-14s  %s" "Copilot"      "(~/.github/agents)"      ;;
     antigravity) printf "%-14s  %s" "Antigravity"  "(~/.gemini/antigravity)" ;;
     gemini-cli)  printf "%-14s  %s" "Gemini CLI"   "(gemini extension)"      ;;
     opencode)    printf "%-14s  %s" "OpenCode"     "(opencode.ai)"           ;;
+    openclaw)    printf "%-14s  %s" "OpenClaw"     "(~/.openclaw)"           ;;
     cursor)      printf "%-14s  %s" "Cursor"       "(.cursor/rules)"         ;;
     aider)       printf "%-14s  %s" "Aider"        "(CONVENTIONS.md)"        ;;
     windsurf)    printf "%-14s  %s" "Windsurf"     "(.windsurfrules)"        ;;
+    qwen)        printf "%-14s  %s" "Qwen Code"    "(~/.qwen/agents)"        ;;
   esac
 }
 
@@ -188,7 +203,7 @@ interactive_select() {
     # --- controls ---
     printf "\n"
     printf "  ------------------------------------------------\n"
-    printf "  ${C_CYAN}[1-7]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n"
+    printf "  ${C_CYAN}[1-%s]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n" "${#ALL_TOOLS[@]}"
     printf "  ${C_GREEN}[Enter]${C_RESET} install   ${C_RED}[q]${C_RESET} quit\n"
     printf "\n"
     printf "  >> "
@@ -259,7 +274,7 @@ install_claude_code() {
   local count=0
   mkdir -p "$dest"
   local dir f first_line
-  for dir in design engineering marketing product project-management \
+  for dir in design engineering game-development marketing paid-media sales product project-management \
               testing support spatial-computing specialized; do
     [[ -d "$REPO_ROOT/$dir" ]] || continue
     while IFS= read -r -d '' f; do
@@ -267,9 +282,27 @@ install_claude_code() {
       [[ "$first_line" == "---" ]] || continue
       cp "$f" "$dest/"
       (( count++ )) || true
-    done < <(find "$REPO_ROOT/$dir" -maxdepth 1 -name "*.md" -type f -print0)
+    done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
   done
   ok "Claude Code: $count agents -> $dest"
+}
+
+install_copilot() {
+  local dest="${HOME}/.github/agents"
+  local count=0
+  mkdir -p "$dest"
+  local dir f first_line
+  for dir in design engineering game-development marketing paid-media sales product project-management \
+              testing support spatial-computing specialized; do
+    [[ -d "$REPO_ROOT/$dir" ]] || continue
+    while IFS= read -r -d '' f; do
+      first_line="$(head -1 "$f")"
+      [[ "$first_line" == "---" ]] || continue
+      cp "$f" "$dest/"
+      (( count++ )) || true
+    done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
+  done
+  ok "Copilot: $count agents -> $dest"
 }
 
 install_antigravity() {
@@ -306,8 +339,8 @@ install_gemini_cli() {
 }
 
 install_opencode() {
-  local src="$INTEGRATIONS/opencode/agent"
-  local dest="${PWD}/.opencode/agent"
+  local src="$INTEGRATIONS/opencode/agents"
+  local dest="${PWD}/.opencode/agents"
   local count=0
   [[ -d "$src" ]] || { err "integrations/opencode missing. Run convert.sh first."; return 1; }
   mkdir -p "$dest"
@@ -317,6 +350,31 @@ install_opencode() {
   done < <(find "$src" -maxdepth 1 -name "*.md" -print0)
   ok "OpenCode: $count agents -> $dest"
   warn "OpenCode: project-scoped. Run from your project root to install there."
+}
+
+install_openclaw() {
+  local src="$INTEGRATIONS/openclaw"
+  local dest="${HOME}/.openclaw/agency-agents"
+  local count=0
+  [[ -d "$src" ]] || { err "integrations/openclaw missing. Run convert.sh first."; return 1; }
+  mkdir -p "$dest"
+  local d
+  while IFS= read -r -d '' d; do
+    local name; name="$(basename "$d")"
+    mkdir -p "$dest/$name"
+    cp "$d/SOUL.md" "$dest/$name/SOUL.md"
+    cp "$d/AGENTS.md" "$dest/$name/AGENTS.md"
+    cp "$d/IDENTITY.md" "$dest/$name/IDENTITY.md"
+    # Register with OpenClaw so agents are usable by agentId immediately
+    if command -v openclaw >/dev/null 2>&1; then
+      openclaw agents add "$name" --workspace "$dest/$name" --non-interactive || true
+    fi
+    (( count++ )) || true
+  done < <(find "$src" -mindepth 1 -maxdepth 1 -type d -print0)
+  ok "OpenClaw: $count workspaces -> $dest"
+  if command -v openclaw >/dev/null 2>&1; then
+    warn "OpenClaw: run 'openclaw gateway restart' to activate new agents"
+  fi
 }
 
 install_cursor() {
@@ -359,15 +417,38 @@ install_windsurf() {
   warn "Windsurf: project-scoped. Run from your project root to install there."
 }
 
+install_qwen() {
+  local src="$INTEGRATIONS/qwen/agents"
+  local dest="${PWD}/.qwen/agents"
+  local count=0
+
+  [[ -d "$src" ]] || { err "integrations/qwen missing. Run convert.sh first."; return 1; }
+
+  mkdir -p "$dest"
+
+  local f
+  while IFS= read -r -d '' f; do
+    cp "$f" "$dest/"
+    (( count++ )) || true
+  done < <(find "$src" -maxdepth 1 -name "*.md" -print0)
+
+  ok "Qwen Code: installed $count agents to $dest"
+  warn "Qwen Code: project-scoped. Run from your project root to install there."
+  warn "Tip: Run '/agents manage' in Qwen Code to refresh, or restart session"
+}
+
 install_tool() {
   case "$1" in
     claude-code) install_claude_code ;;
+    copilot)     install_copilot     ;;
     antigravity) install_antigravity ;;
     gemini-cli)  install_gemini_cli  ;;
     opencode)    install_opencode    ;;
+    openclaw)    install_openclaw    ;;
     cursor)      install_cursor      ;;
     aider)       install_aider       ;;
     windsurf)    install_windsurf    ;;
+    qwen)        install_qwen        ;;
   esac
 }
 
